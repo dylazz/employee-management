@@ -14,7 +14,7 @@ const onClose = () => {
 </script>
 
 <template>
-  <div v-if="isOpen" @click.self="onClose" class="fixed inset-0 bg-black backdrop-opacity-90 flex items-center justify-center z-50">
+  <div v-if="isOpen" @click.self="onClose" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
       <!-- Header with close button -->
       <div class="flex justify-between items-center mb-4">
