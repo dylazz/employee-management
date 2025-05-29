@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import EmployeeIndex from "./components/views/EmployeeIndex.vue";
-
+import {RouterView} from "vue-router";
 </script>
 
 <template>
-  <EmployeeIndex/>
+  <RouterView/>
 </template>
 
 
