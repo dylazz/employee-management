@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import type {ICellRendererParams} from 'ag-grid-community';
-import {useRouter} from 'vue-router';
 import type {Employee} from "../../types/employee.ts";
 
-const props = defineProps<{
-  params: ICellRendererParams & { data: Employee }
-}>();
+interface Props {
+  params: ICellRendererParams &{
+    data: Employee;
+    onViewEmployee: (employee: Employee) => void;
+  }
+}
 
-const router = useRouter();
+const props = defineProps<Props>();
+
 const emit = defineEmits(['deleteEmployee']);
 
 const onViewClick = () => {
-  router.push({name: 'employee-profile', params: {id: props.params.data.id}});
+  props.params.onViewEmployee(props.params.data);
 };
 
 const onEditClick = () => {

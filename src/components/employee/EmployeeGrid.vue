@@ -4,11 +4,31 @@ import {ref} from "vue";
 import {AllCommunityModule, ModuleRegistry} from 'ag-grid-community';
 import {employees} from '../../utils/employeeData.ts';
 import ActionCellRenderer from './ActionCellRenderer.vue'
+import type {Employee} from "../../types/employee.ts";
+import EmployeeProfileModal from "./EmployeeProfileModal.vue";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 // Loading Row data from JSON
 const rowData = ref(employees);
+
+// Modal state
+const selectedEmployee = ref<Employee | null>(null);
+const isModalOpen = ref(false);
+const modalEditMode = ref(false);
+
+// Method to open modal
+const openViewEmployeeModal = (employee: Employee) => {
+  selectedEmployee.value = employee;
+  isModalOpen.value = true;
+  modalEditMode.value = false;
+};
+
+// Method to close modal
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedEmployee.value = null;
+};
 
 // Column Definitions
 const colDefs = ref([
@@ -34,6 +54,9 @@ const colDefs = ref([
     minWidth: 200,
     sortable: false,
     cellRenderer: ActionCellRenderer,
+    cellRendererParams:{
+      onViewEmployee: openViewEmployeeModal
+    }
   }
 ]);
 
@@ -76,6 +99,20 @@ function terminationStatus(value: string) {
         style="height: 500px"
     >
     </ag-grid-vue>
+
+    <!-- Employee Profile Modal
+    Only renders if employee is selected
+    Passes employee data to modal
+    Controls Modal visibility
+    Listens to 'close' emit -> executes closeModal()
+    -->
+    <employee-profile-modal
+        v-if="selectedEmployee && isModalOpen"
+        :employee="selectedEmployee"
+        :is-open="isModalOpen"
+        @close="closeModal"
+    />
+
   </div>
 </template>
 
