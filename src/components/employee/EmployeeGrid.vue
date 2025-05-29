@@ -6,6 +6,7 @@ import {employees} from '../../utils/employeeData.ts';
 import ActionCellRenderer from './ActionCellRenderer.vue'
 import type {Employee} from "../../types/employee.ts";
 import EmployeeProfileModal, {type ModalMode} from './EmployeeProfileModal.vue';
+import CreateEmployeeButton from "./CreateEmployeeButton.vue";
 import {ElMessage} from 'element-plus';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -38,7 +39,7 @@ const handleDelete = (employee: Employee) => {
 };
 
 // Finding the index of employee to update. If found, update employee data. Checking if data changed before success message.
-const handleEmployeeUpdate = (updatedEmployee: Employee) => {
+const handleEmployeeSave = (updatedEmployee: Employee) => {
   const index = rowData.value.findIndex(emp => emp.id === updatedEmployee.id);
   if (index !== -1) {
     if (JSON.stringify(rowData.value[index]) !== JSON.stringify(updatedEmployee)) {
@@ -46,9 +47,15 @@ const handleEmployeeUpdate = (updatedEmployee: Employee) => {
       ElMessage.success('Employee updated successfully');
     }
   } else {
-    ElMessage.error(`Employee with ID ${updatedEmployee.id} not found`);
+    // Adding new employee
+    rowData.value.push(updatedEmployee);
+    ElMessage.success(`Employee: ${updatedEmployee.fullName} created successfully`);
   }
   closeModal();
+};
+
+const handleCreateEmployee = (newEmployee: Employee) => {
+  openModal(newEmployee,'create');
 };
 
 // Loading Row data from JSON
@@ -137,8 +144,10 @@ function terminationStatus(value: string) {
         :employee="selectedEmployee"
         :mode="modalMode"
         @close="closeModal"
-        @save="handleEmployeeUpdate"
+        @save="handleEmployeeSave"
     />
+
+    <create-employee-button @create="handleCreateEmployee" />
 
   </div>
 </template>
