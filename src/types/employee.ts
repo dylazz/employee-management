@@ -4,5 +4,5 @@ export interface Employee {
     occupation: string;
     department: string;
     dateOfEmployment: string;
-    terminationDate?: string;
+    terminationDate: string | null;
 }

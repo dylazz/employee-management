@@ -1,34 +1,66 @@
 <script setup lang="ts">
-import {AgGridVue} from "ag-grid-vue3";
-import {ref} from "vue";
+import {AgGridVue} from 'ag-grid-vue3';
+import {ref} from 'vue';
 import {AllCommunityModule, ModuleRegistry} from 'ag-grid-community';
 import {employees} from '../../utils/employeeData.ts';
 import ActionCellRenderer from './ActionCellRenderer.vue'
 import type {Employee} from "../../types/employee.ts";
-import EmployeeProfileModal from "./EmployeeProfileModal.vue";
+import EmployeeProfileModal, {type ModalMode} from './EmployeeProfileModal.vue';
+import {ElMessage} from 'element-plus';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-// Loading Row data from JSON
-const rowData = ref(employees);
-
 // Modal state
-const selectedEmployee = ref<Employee | null>(null);
 const isModalOpen = ref(false);
-const modalEditMode = ref(false);
+const selectedEmployee = ref<Employee | null>(null);
+const modalMode = ref<ModalMode>('view');
 
-// Method to open modal
-const openViewEmployeeModal = (employee: Employee) => {
+// Modal methods
+const openModal = (employee: Employee, mode: ModalMode = 'view') => {
   selectedEmployee.value = employee;
+  modalMode.value = mode;
   isModalOpen.value = true;
-  modalEditMode.value = false;
 };
 
-// Method to close modal
 const closeModal = () => {
   isModalOpen.value = false;
   selectedEmployee.value = null;
 };
+
+/*  Deletes the employee from the employee array (Mimics a delete function)
+    Can implement localstorage solution to retain delete on refresh - not required?
+* */
+const handleDelete = (employee: Employee) => {
+  if (confirm(`Are you sure you want to delete ${employee.fullName}?`)) {
+    rowData.value = rowData.value.filter(emp => emp.id !== employee.id);
+    ElMessage.warning('Employee deleted successfully');
+  }
+};
+
+// Finding the index of employee to update. If found, update employee data. Checking if data changed before success message.
+const handleEmployeeUpdate = (updatedEmployee: Employee) => {
+  const index = rowData.value.findIndex(emp => emp.id === updatedEmployee.id);
+  if (index !== -1) {
+    if (JSON.stringify(rowData.value[index]) !== JSON.stringify(updatedEmployee)) {
+      rowData.value[index] = updatedEmployee
+      ElMessage.success('Employee updated successfully');
+    }
+  } else {
+    ElMessage.error(`Employee with ID ${updatedEmployee.id} not found`);
+  }
+  closeModal();
+};
+
+// Loading Row data from JSON
+const rowData = ref(employees);
+
+const defaultColDef = ref({
+  resizable: true,
+  autoHeight: true,
+  flex: 1,
+  minWidth: 100,
+
+});
 
 // Column Definitions
 const colDefs = ref([
@@ -54,19 +86,13 @@ const colDefs = ref([
     minWidth: 200,
     sortable: false,
     cellRenderer: ActionCellRenderer,
-    cellRendererParams:{
-      onViewEmployee: openViewEmployeeModal
+    cellRendererParams: {
+      onViewClick: (employee: Employee) => openModal(employee, 'view'),
+      onEditClick: (employee: Employee) => openModal(employee, 'edit'),
+      onDeleteClick: handleDelete
     }
   }
 ]);
-
-const defaultColDef = ref({
-  resizable: true,
-  autoHeight: true,
-  flex: 1,
-  minWidth: 100,
-
-});
 
 // Receives param value of dateOfEmployment in string, converts to Date, and applies logic
 function employmentStatus(value: string) {
@@ -107,10 +133,11 @@ function terminationStatus(value: string) {
     Listens to 'close' emit -> executes closeModal()
     -->
     <employee-profile-modal
-        v-if="selectedEmployee && isModalOpen"
+        v-if="isModalOpen && selectedEmployee"
         :employee="selectedEmployee"
-        :is-open="isModalOpen"
+        :mode="modalMode"
         @close="closeModal"
+        @save="handleEmployeeUpdate"
     />
 
   </div>
