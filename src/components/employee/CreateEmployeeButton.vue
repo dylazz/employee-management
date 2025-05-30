@@ -24,9 +24,10 @@ const handleCreateClick = () => {
 <template>
   <button
       @click="handleCreateClick"
-      class="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2"
+      class="fixed bottom-6 right-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-all duration-300 flex items-center gap-1"
   >
-    <span class="text-lg">+</span>
-    Create Employee
+    <span class="text-xs">+</span>
+    <span class="text-sm">Create Employee</span>
   </button>
+
 </template>

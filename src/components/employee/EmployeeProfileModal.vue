@@ -18,6 +18,7 @@ const emit = defineEmits(['close', 'save']);
 
 // Creating a reactive copy of employee data
 const formData = ref<Employee>({...props.employee});
+const errors = ref<Record<string, string>>({});
 
 // Responsive modal title
 const modalTitle = computed(() => {
@@ -49,14 +50,33 @@ const handleClose = () => {
 }
 
 const handleSaveClick = (e: Event) => {
-  const form = e.target as HTMLFormElement;
-  if (form.checkValidity()) {
+  e.preventDefault();
+
+  if (validateForm()) {
     emit('save', formData.value);
     emit('close');
-  } else {
-    form.reportValidity();
+  }
+};
+
+const validateForm = () => {
+  errors.value = {};
+
+  if (!formData.value.fullName?.trim()) {
+    errors.value.fullName = 'Full name is required';
   }
 
+  if (!formData.value.occupation?.trim()) {
+    errors.value.occupation = 'Occupation is required';
+  }
+
+  if (!formData.value.department?.trim()) {
+    errors.value.department = 'Department is required';
+  }
+
+  if (props.mode === 'create' && !formData.value.code?.trim()) {
+    errors.value.code = 'Employee code is required';
+  }
+  return Object.keys(errors.value).length === 0;
 };
 
 </script>
@@ -69,7 +89,7 @@ const handleSaveClick = (e: Event) => {
         <h2 class="text-xl font-bold">
           {{ modalTitle }}
         </h2>
-        <button @click="$emit('close')" class="text-gray-500 hover:text-gray-700">
+        <button @click="handleClose" class="text-gray-500 hover:text-gray-700">
           <span class="text-2xl">&times;</span>
         </button>
       </div>
@@ -83,42 +103,49 @@ const handleSaveClick = (e: Event) => {
                 v-model="formData.code"
                 type="text"
                 class="w-full p-2 border rounded-md"
-                required
+                :class="{ 'border-red-500': errors.code }"
             >
+            <span v-if="errors.code" class="text-sm text-red-500">{{ errors.code }}</span>
           </div>
           <div>
             <h3 class="font-semibold">Full Name</h3>
-            <input
-                v-if="isEditing"
-                v-model="formData.fullName"
-                type="text"
-                class="w-full p-2 border rounded-md"
-                required
-            >
+            <template v-if="isEditing">
+              <input
+                  v-model="formData.fullName"
+                  type="text"
+                  class="w-full p-2 border rounded-md"
+                  :class="{ 'border-red-500': errors.fullName }"
+              >
+              <span v-if="errors.fullName" class="text-sm text-red-500">{{ errors.fullName }}</span>
+            </template>
             <p v-else>{{ employee.fullName }}</p>
           </div>
 
           <div>
             <h3 class="font-semibold">Occupation</h3>
-            <input
-                v-if="isEditing"
-                v-model="formData.occupation"
-                type="text"
-                class="w-full p-2 border rounded-md"
-                required
-            >
+            <template v-if="isEditing">
+              <input
+                  v-model="formData.occupation"
+                  type="text"
+                  class="w-full p-2 border rounded-md"
+                  :class="{ 'border-red-500': errors.occupation }"
+              >
+              <span v-if="errors.occupation" class="text-sm text-red-500">{{ errors.occupation }}</span>
+            </template>
             <p v-else>{{ employee.occupation }}</p>
           </div>
 
           <div>
             <h3 class="font-semibold">Department</h3>
-            <input
-                v-if="isEditing"
-                v-model="formData.department"
-                type="text"
-                class="w-full p-2 border rounded-md"
-                required
-            >
+            <template v-if="isEditing">
+              <input
+                  v-model="formData.department"
+                  type="text"
+                  class="w-full p-2 border rounded-md"
+                  :class="{ 'border-red-500': errors.department }"
+              >
+              <span v-if="errors.department" class="text-sm text-red-500">{{ errors.department }}</span>
+            </template>
             <p v-else>{{ employee.department }}</p>
           </div>
 
