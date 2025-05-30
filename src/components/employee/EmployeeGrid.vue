@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import {AgGridVue} from 'ag-grid-vue3';
 import {ref} from 'vue';
-import {
-  AllCommunityModule,
-  type FirstDataRenderedEvent,
-  type GridSizeChangedEvent,
-  ModuleRegistry
-} from 'ag-grid-community';
+import {AllCommunityModule, type FirstDataRenderedEvent, type GridSizeChangedEvent, ModuleRegistry} from 'ag-grid-community';
 import {employees} from '../../utils/employeeData.ts';
 import ActionCellRenderer from './ActionCellRenderer.vue'
 import type {Employee} from "../../types/employee.ts";
