@@ -209,7 +209,7 @@ function terminationStatus(value: string) {
         :pagination="true"
         @grid-size-changed="onGridSizeChanged"
         @first-data-rendered="onFirstDataRendered"
-        style="height: 500px"
+        style="height:auto"
     >
     </ag-grid-vue>
 
