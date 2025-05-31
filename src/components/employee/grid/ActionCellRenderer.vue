@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {ICellRendererParams} from 'ag-grid-community';
-import type {Employee} from '../../types/employee.ts';
+import type {Employee} from '../../../types/employee.ts';
 
 interface Props {
   params: ICellRendererParams &{

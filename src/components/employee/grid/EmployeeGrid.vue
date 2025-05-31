@@ -9,7 +9,7 @@ import {
   ModuleRegistry,
   type GridApi
 } from 'ag-grid-community';
-import type { Employee } from "../../types/employee";
+import type { Employee } from "../../../types/employee.ts";
 import ActionCellRenderer from './ActionCellRenderer.vue';
 
 ModuleRegistry.registerModules([AllCommunityModule]);

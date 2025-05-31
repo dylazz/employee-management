@@ -10,7 +10,7 @@ import EmployeeFormModal, {type ModalMode} from './EmployeeFormModal.vue';
 import CreateEmployeeButton from "./CreateEmployeeButton.vue";
 import {ElMessage} from 'element-plus';
 import EmployeeDataImportExport from './EmployeeDataImportExport.vue';
-import EmployeeGrid from "./EmployeeGrid.vue";
+import EmployeeGrid from "./grid/EmployeeGrid.vue";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
