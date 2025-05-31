@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from "vue-router";
-import EmployeeIndex from "../components/views/EmployeeIndex.vue";
+import EmployeeIndex from "../components/employee/EmployeeIndex.vue";
 
 const router = createRouter({
     history:createWebHistory(),
