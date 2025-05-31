@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import {AgGridVue} from 'ag-grid-vue3';
-import {ref} from 'vue';
-import {AllCommunityModule, type FirstDataRenderedEvent, type GridSizeChangedEvent, ModuleRegistry} from 'ag-grid-community';
+import {ref, shallowRef} from 'vue';
+import {
+  AllCommunityModule,
+  type FirstDataRenderedEvent,
+  type GridReadyEvent,
+  type GridSizeChangedEvent,
+  ModuleRegistry
+} from 'ag-grid-community';
 import {employees} from '../../utils/employeeData.ts';
 import ActionCellRenderer from './ActionCellRenderer.vue'
 import type {Employee} from "../../types/employee.ts";
 import EmployeeProfileModal, {type ModalMode} from './EmployeeProfileModal.vue';
 import CreateEmployeeButton from "./CreateEmployeeButton.vue";
 import {ElMessage} from 'element-plus';
+import { type GridApi } from 'ag-grid-community';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -60,6 +67,8 @@ const handleEmployeeCreate = (newEmployee: Employee) => {
 
 // Loading Row data from JSON
 const rowData = ref(employees);
+
+const gridApi = shallowRef<GridApi<Employee> | null>(null);
 
 const defaultColDef = ref({
   resizable: true,
@@ -196,10 +205,42 @@ function terminationStatus(value: string) {
   return '<span class="text-red-600">Terminated</span>';
 }
 
+function handleExport() {
+  if (!gridApi.value) {
+    ElMessage.error('Something went wrong, please contact your systems administrator');
+    console.error('Grid API is not initialized');
+    return;
+  }
+
+  try {
+    gridApi.value.exportDataAsCsv({
+      allColumns: true
+    });
+    ElMessage.success('Downloading CSV file');
+  } catch (error) {
+    ElMessage.error('Something went wrong!');
+    console.error('Failed to export CSV:', error);
+  }
+}
+
+const onGridReady = (params: GridReadyEvent) => {
+  gridApi.value = params.api;
+};
+
 </script>
 
 <template>
   <div class="w-full h-[500px]">
+    <!-- Export/Import controls -->
+    <div class="mb-2 flex justify-end px-4 pt-2">
+      <button
+          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-2 rounded inline-flex items-center"
+          @click="handleExport()"
+      >
+        <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+        Export to CSV
+      </button>
+    </div>
     <!-- The AG Grid component -->
     <ag-grid-vue
         :rowData="rowData"
@@ -209,6 +250,7 @@ function terminationStatus(value: string) {
         :pagination="true"
         @grid-size-changed="onGridSizeChanged"
         @first-data-rendered="onFirstDataRendered"
+        @grid-ready="onGridReady"
         style="height:auto"
     >
     </ag-grid-vue>
