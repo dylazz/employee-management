@@ -175,7 +175,7 @@ const validateForm = () => {
           <div class="flex justify-end space-x-2 mt-4">
             <button
                 type="button"
-                @click="$emit('close')"
+                @click="handleClose"
                 class="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
             >
               {{ isEditing ? 'Cancel' : '' }}

@@ -11,7 +11,7 @@ import {
 import {employees} from '../../utils/employeeData.ts';
 import ActionCellRenderer from './ActionCellRenderer.vue'
 import type {Employee} from "../../types/employee.ts";
-import EmployeeProfileModal, {type ModalMode} from './EmployeeProfileModal.vue';
+import EmployeeFormModal, {type ModalMode} from './EmployeeFormModal.vue';
 import CreateEmployeeButton from "./CreateEmployeeButton.vue";
 import {ElMessage} from 'element-plus';
 import { type GridApi } from 'ag-grid-community';
@@ -35,9 +35,7 @@ const closeModal = () => {
   selectedEmployee.value = null;
 };
 
-/*  Deletes the employee from the employee array (Mimics a delete function)
-    Can implement localstorage solution to retain delete on refresh - not required?
-* */
+// Deletes the employee from the employee array (Mimics a delete function)
 const handleEmployeeDelete = (employee: Employee) => {
   if (confirm(`Are you sure you want to delete ${employee.fullName}?`)) {
     rowData.value = rowData.value.filter(emp => emp.id !== employee.id);
@@ -46,7 +44,7 @@ const handleEmployeeDelete = (employee: Employee) => {
 };
 
 // Finding the index of employee to update. If found, update employee data. Checking if data changed before success message.
-const handleEmployeeSave = (updatedEmployee: Employee) => {
+const handleEmployeeFormSubmit = (updatedEmployee: Employee) => {
   const index = rowData.value.findIndex(emp => emp.id === updatedEmployee.id);
   if (index !== -1) {
     if (JSON.stringify(rowData.value[index]) !== JSON.stringify(updatedEmployee)) {
@@ -211,7 +209,6 @@ function handleExport() {
     console.error('Grid API is not initialized');
     return;
   }
-
   try {
     gridApi.value.exportDataAsCsv({
       allColumns: true
@@ -257,23 +254,18 @@ const onGridReady = (params: GridReadyEvent) => {
 
     <!-- Employee Profile Modal
     Only renders if employee is selected
-    Passes employee data to modal
-    Controls Modal visibility
-    Listens to 'close' emit -> executes closeModal()
+    Passing employee data & modal mode to child
+    Receiving close & save from child
     -->
-    <employee-profile-modal
+    <employee-form-modal
         v-if="isModalOpen && selectedEmployee"
         :employee="selectedEmployee"
         :mode="modalMode"
         @close="closeModal"
-        @save="handleEmployeeSave"
+        @save="handleEmployeeFormSubmit"
     />
 
     <create-employee-button @create="handleEmployeeCreate"/>
 
   </div>
 </template>
-
-<style scoped>
-
-</style>
