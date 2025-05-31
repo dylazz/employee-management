@@ -160,7 +160,7 @@ const handleFileSelect = (event: Event) => {
   <!-- Export/Import controls -->
   <div class="mb-2 flex justify-center px-4 pt-2 gap-10">
     <button
-        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-2 rounded inline-flex items-center"
+        class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-2 rounded inline-flex items-center"
         @click="handleExport"
     >
       <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -170,7 +170,7 @@ const handleFileSelect = (event: Event) => {
     </button>
 
     <button
-        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-2 rounded inline-flex items-center"
+        class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-2 rounded inline-flex items-center"
         @click="handleImport"
     >
       <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
