@@ -90,6 +90,7 @@ const colDefs = ref([
 const onGridSizeChanged = (params: GridSizeChangedEvent) => {
   // Getting the current width of the grid's viewport
   const gridWidth = document.querySelector('.ag-body-viewport')?.clientWidth || 0;
+  (params.api as any).setGridOption('paginationPageSizeSelector', gridWidth > 768);
 
   // Disable resizing on mobile
   defaultColDef.value = {
