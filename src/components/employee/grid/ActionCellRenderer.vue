@@ -2,16 +2,15 @@
 import type {ICellRendererParams} from 'ag-grid-community';
 import type {Employee} from '../../../types/employee.ts';
 
-interface Props {
-  params: ICellRendererParams &{
+const props = defineProps<{
+  params: ICellRendererParams & {
     data: Employee;
     onViewClick: (employee: Employee) => void;
     onEditClick: (employee: Employee) => void;
     onDeleteClick: (employee: Employee) => void;
   }
-}
+}>();
 
-const props = defineProps<Props>();
 
 const { data, onViewClick, onEditClick, onDeleteClick } = props.params;
 

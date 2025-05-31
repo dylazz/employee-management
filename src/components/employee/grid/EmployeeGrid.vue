@@ -36,7 +36,9 @@ const defaultColDef = ref({
   autoHeight: true,
   flex: 1,
   minWidth: 100,
-  suppressSizeToFit: false
+  suppressSizeToFit: false,
+  sortable: true,
+  filter: true
 });
 
 // Column Definitions
@@ -44,38 +46,28 @@ const colDefs = ref([
   {
     field: 'fullName',
     headerName: 'Employee Full Name',
-    sortable: true,
-    filter: true,
     minWidth: 130,
     suppressSizeToFit: false,
   },
   {
     field: 'occupation',
     headerName: 'Occupation',
-    sortable: true,
-    filter: true,
     minWidth: 100
   },
   {
     field: 'department',
     headerName: 'Department',
-    sortable: true,
-    filter: true,
     minWidth: 120
   },
   {
     field: 'dateOfEmployment',
     headerName: 'Date of Employment',
-    sortable: true,
-    filter: true,
     minWidth: 150,
     cellRenderer: (params: { value: string }) => employmentStatus(params.value)
   },
   {
     field: 'terminationDate',
     headerName: 'Termination Date',
-    sortable: true,
-    filter: true,
     minWidth: 110,
     cellRenderer: (params: { value: string }) => terminationStatus(params.value)
   },
@@ -84,6 +76,7 @@ const colDefs = ref([
     headerName: 'Actions',
     minWidth: 190,
     sortable: false,
+    filter: false,
     cellRenderer: ActionCellRenderer,
     cellRendererParams: {
       onViewClick: (employee: Employee) => emit('view', employee),

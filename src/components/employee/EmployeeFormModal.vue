@@ -38,8 +38,6 @@ const modalSubmitText = computed(() => {
       return 'Create Employee';
     case 'edit':
       return 'Save Changes';
-    default:
-      return 'test'
   }
 });
 
