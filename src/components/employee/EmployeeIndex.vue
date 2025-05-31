@@ -3,8 +3,7 @@ import {AgGridVue} from 'ag-grid-vue3';
 import {ref, shallowRef} from 'vue';
 import {
   AllCommunityModule,
-  type FirstDataRenderedEvent,
-  type GridReadyEvent,
+  type FirstDataRenderedEvent, type GridReadyEvent,
   type GridSizeChangedEvent,
   ModuleRegistry
 } from 'ag-grid-community';
@@ -14,7 +13,8 @@ import type {Employee} from "../../types/employee.ts";
 import EmployeeFormModal, {type ModalMode} from './EmployeeFormModal.vue';
 import CreateEmployeeButton from "./CreateEmployeeButton.vue";
 import {ElMessage} from 'element-plus';
-import { type GridApi } from 'ag-grid-community';
+import {type GridApi} from 'ag-grid-community';
+import EmployeeDataImportExport from './EmployeeDataImportExport.vue';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -187,57 +187,39 @@ const onFirstDataRendered = (params: FirstDataRenderedEvent) => {
 };
 
 // Receives param value of dateOfEmployment in string, converts to Date, and applies logic
-function employmentStatus(value: string) {
+const employmentStatus = (value: string) => {
   const today = new Date();
   const date = new Date(value);
   if (date > today) return '<span class="text-yellow-600">Employed Soon</span>';
   return '<span class="text-green-600">Currently Employed</span>';
-}
+};
 
 // Receives param value of terminationDate in string, converts to Date, and applies logic
-function terminationStatus(value: string) {
+const terminationStatus = (value: string) => {
   if (!value) return '<span class="text-gray-400">None</span>';
   const today = new Date();
   const date = new Date(value);
   if (date > today) return '<span class="text-yellow-600">To Be Terminated</span>';
   return '<span class="text-red-600">Terminated</span>';
-}
-
-function handleExport() {
-  if (!gridApi.value) {
-    ElMessage.error('Something went wrong, please contact your systems administrator');
-    console.error('Grid API is not initialized');
-    return;
-  }
-  try {
-    gridApi.value.exportDataAsCsv({
-      allColumns: true
-    });
-    ElMessage.success('Downloading CSV file');
-  } catch (error) {
-    ElMessage.error('Something went wrong!');
-    console.error('Failed to export CSV:', error);
-  }
-}
+};
 
 const onGridReady = (params: GridReadyEvent) => {
   gridApi.value = params.api;
+};
+
+const updateGridData = (newData: Employee[]) => {
+  rowData.value = newData;
 };
 
 </script>
 
 <template>
   <div class="w-full h-[500px]">
-    <!-- Export/Import controls -->
-    <div class="mb-2 flex justify-end px-4 pt-2">
-      <button
-          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-2 rounded inline-flex items-center"
-          @click="handleExport()"
-      >
-        <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
-        Export to CSV
-      </button>
-    </div>
+    <!--Import/Export component-->
+    <employee-data-import-export
+        :grid-api="gridApi"
+        @update-data="updateGridData"
+    />
     <!-- The AG Grid component -->
     <ag-grid-vue
         :rowData="rowData"
