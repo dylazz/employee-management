@@ -104,7 +104,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
 onMounted(() => {
   fileInput.value = document.createElement('input');
   fileInput.value.type = 'file';
-  fileInput.value.accept = '.xlsx, .xls';
+  fileInput.value.accept = '.xlsx, .xls, .csv';
   fileInput.value.style.display = 'none';
   fileInput.value.addEventListener('change', handleFileSelect);
   document.body.appendChild(fileInput.value);
@@ -161,22 +161,22 @@ const handleFileSelect = (event: Event) => {
   <div class="mb-2 flex justify-center px-4 pt-2 gap-10">
     <button
         class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-2 rounded inline-flex items-center"
-        @click="handleExport()"
+        @click="handleExport"
     >
       <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
         <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/>
       </svg>
-      Export to Excel
+      Export to CSV
     </button>
 
     <button
         class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-2 rounded inline-flex items-center"
-        @click="handleImport()"
+        @click="handleImport"
     >
       <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
         <path d="M13 10v6H7v-6H2l8-8 8 8h-5zM0 18h20v2H0v-2z"/>
       </svg>
-      Import Excel
+      Import Excel/CSV
     </button>
   </div>
 </template>
