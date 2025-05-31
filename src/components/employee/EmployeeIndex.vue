@@ -68,7 +68,6 @@ const updateGridData = (newData: Employee[]) => {
   rowData.value = newData;
 };
 
-
 </script>
 
 <template>

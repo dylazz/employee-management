@@ -11,7 +11,6 @@ const props = defineProps<{
   }
 }>();
 
-
 const { data, onViewClick, onEditClick, onDeleteClick } = props.params;
 
 </script>
